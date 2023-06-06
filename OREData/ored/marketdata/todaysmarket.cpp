@@ -59,6 +59,8 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/timer/timer.hpp>
 
+#include <iostream>
+
 using namespace std;
 using namespace QuantLib;
 
@@ -502,6 +504,7 @@ void TodaysMarket::buildNode(const std::string& configuration, Node& node) const
 
         // Optionlet Vol
         case CurveSpec::CurveType::OptionletVolatility: {
+            std::cout << "Processing OptionletVol" << std::endl;
             boost::shared_ptr<OptionletVolatilityCurveSpec> oVolSpec =
                 boost::dynamic_pointer_cast<OptionletVolatilityCurveSpec>(spec);
             QL_REQUIRE(oVolSpec, "Failed to convert spec " << *spec);
