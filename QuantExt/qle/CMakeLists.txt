@@ -151,6 +151,7 @@ math/blockmatrixinverse.cpp
 math/bucketeddistribution.cpp
 math/compiledformula.cpp
 math/computeenvironment.cpp
+math/cudaenvironment.cpp
 math/deltagammavar.cpp
 math/differentialevolution_mt.cpp
 math/discretedistribution.cpp
@@ -616,6 +617,7 @@ math/compiledformula.hpp
 math/computeenvironment.hpp
 math/constantinterpolation.hpp
 math/covariancesalvage.hpp
+math/cudaenvironment.hpp
 math/deltagammavar.hpp
 math/differentialevolution_mt.hpp
 math/discretedistribution.hpp
