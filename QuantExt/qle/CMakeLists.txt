@@ -980,6 +980,12 @@ if(ORE_ENABLE_OPENCL)
   endif()
 endif()
 
+if (ORE_ENABLE_CUDA)
+	find_package(CUDAToolkit REQUIRED)
+	target_link_libraries(${QLE_LIB_NAME} CUDA::cudart)
+	target_link_libraries(${QLE_LIB_NAME} CUDA::nvrtc)
+endif()
+
 if(NOT USE_GLOBAL_ORE_BUILD AND QL_USE_PCH)
  target_precompile_headers(${QLE_LIB_NAME}
    PUBLIC
