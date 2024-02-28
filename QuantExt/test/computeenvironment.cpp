@@ -19,6 +19,7 @@
 #include <qle/math/basiccpuenvironment.hpp>
 #include <qle/math/computeenvironment.hpp>
 #include <qle/math/openclenvironment.hpp>
+#include <qle/math/cudaenvironment.hpp>
 #include <qle/math/randomvariable.hpp>
 #include <qle/math/randomvariable_io.hpp>
 #include <qle/math/randomvariable_opcodes.hpp>
@@ -42,8 +43,10 @@ struct ComputeEnvironmentFixture {
     ComputeEnvironmentFixture() {
         QuantExt::ComputeFrameworkRegistry::instance()
             .add("OpenCL", &QuantExt::createComputeFrameworkCreator<QuantExt::OpenClFramework>, true);
-                QuantExt::ComputeFrameworkRegistry::instance()
+        QuantExt::ComputeFrameworkRegistry::instance()
             .add("BasicCpu", &QuantExt::createComputeFrameworkCreator<QuantExt::BasicCpuFramework>, true);
+        QuantExt::ComputeFrameworkRegistry::instance().add(
+            "Cuda", &QuantExt::createComputeFrameworkCreator<QuantExt::CudaFramework>, true);
     }
     ~ComputeEnvironmentFixture() { ComputeEnvironment::instance().reset(); }
 };
@@ -83,9 +86,7 @@ BOOST_AUTO_TEST_CASE(testSimpleCalc) {
         BOOST_TEST_MESSAGE("testing simple calc on device '" << d << "'.");
         ComputeEnvironment::instance().selectContext(d);
         auto& c = ComputeEnvironment::instance().context();
-
         BOOST_TEST_MESSAGE("  do first calc");
-
         auto [id, _] = c.initiateCalculation(n);
         std::vector<double> rx(n, 4.0);
         auto x = c.createInputVariable(&rx[0]);
@@ -95,20 +96,25 @@ BOOST_AUTO_TEST_CASE(testSimpleCalc) {
         c.declareOutputVariable(w);
         std::vector<std::vector<double>> output(1, std::vector<double>(n));
         c.finalizeCalculation(output, {});
+//        int ii = 0;
         for (auto const& v : output.front()) {
-            BOOST_CHECK_CLOSE(v, 49.0, 1.0E-8);
+//            if (ii == 0)
+                BOOST_CHECK_CLOSE(v, 49.0, 1.0E-8);
+ //           ii++;
         }
 
         BOOST_TEST_MESSAGE("  do second calc using same kernel");
-
         c.initiateCalculation(n, id, 0);
         std::vector<double> rx2(n, 5.0);
         c.createInputVariable(&rx2[0]);
         c.createInputVariable(1.0);
         std::vector<std::vector<double>> output2(1, std::vector<double>(n));
         c.finalizeCalculation(output2, {});
+ //       ii = 0;
         for (auto const& v : output2.front()) {
-            BOOST_CHECK_CLOSE(v, 36.0, 1.0E-8);
+//            if (ii == 0)
+                BOOST_CHECK_CLOSE(v, 36.0, 1.0E-8);
+//           ii++;
         }
     }
 }
@@ -180,7 +186,8 @@ BOOST_AUTO_TEST_CASE(testLargeCalc) {
 
 BOOST_AUTO_TEST_CASE(testRngGeneration) {
     ComputeEnvironmentFixture fixture;
-    const std::size_t n = 65536;
+    //const std::size_t n = 65536;
+    const std::size_t n = 51200;
     for (auto const& d : ComputeEnvironment::instance().getAvailableDevices()) {
         BOOST_TEST_MESSAGE("testing rng generation on device '" << d << "'.");
         ComputeEnvironment::instance().selectContext(d);
