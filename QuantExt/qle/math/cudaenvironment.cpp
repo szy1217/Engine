@@ -367,6 +367,8 @@ std::size_t CudaContext::createInputVariable(double* v) {
                "CudaContext::createInputVariable(): not in state createInput (" << static_cast<int>(currentState_)
                                                                                   << ")");
     double* dMem;
+    double* pinned_v;
+
     deviceVarList_.push_back(dMem);
     inputVarIsScalar_.push_back(false);
     hostVarList_.push_back(v);
@@ -605,6 +607,17 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
     size_t size_scalar = sizeof(double);
     size_t size_vector = sizeof(double) * size_[currentId_ - 1];
     size_t size_var;
+    double* pinned_scalar;
+    cudaErr = cudaMallocHost((void**)&pinned_scalar, size_scalar);
+    QL_REQUIRE(cudaErr == cudaSuccess,
+               "CudaContext::finalizeCalculation(): host pinned memory allocation for pinned_scalar fails: "
+                   << cudaGetErrorString(cudaErr));
+    double* pinned_vector;
+    cudaErr = cudaMallocHost((void**)&pinned_vector, size_vector);
+    QL_REQUIRE(cudaErr == cudaSuccess,
+               "CudaContext::finalizeCalculation(): host pinned memory allocation for pinned_vector fails: "
+                   << cudaGetErrorString(cudaErr));
+
     for (size_t i = 0; i < hostVarList_.size(); i++) {
         size_var = inputVarIsScalar_[i] ? size_scalar : size_vector;
         // Allocate memory in device
@@ -614,14 +627,13 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
         //Copy vector from host to device
         if (hostVarList_[i] != nullptr) {
             // Allocate pinned memory on device
-            double* pinned_v;
-            cudaErr = cudaMallocHost((void**)&pinned_v, size_var);
-            QL_REQUIRE(cudaErr == cudaSuccess,
-                       "CudaContext::finalizeCalculation(): host pinned memory allocation for hostVarList_["
-                           << i << "] fails: " << cudaGetErrorString(cudaErr));
-            memcpy(pinned_v, hostVarList_[i], size_var);
-            cudaErr = cudaMemcpyAsync(deviceVarList_[i], pinned_v, size_var, cudaMemcpyHostToDevice);
-            //cudaErr = cudaMemcpyAsync(deviceVarList_[i], hostVarList_[i], size_var, cudaMemcpyHostToDevice);
+            if (inputVarIsScalar_[i]) {
+                memcpy(pinned_scalar, hostVarList_[i], size_scalar);
+                cudaErr = cudaMemcpyAsync(deviceVarList_[i], pinned_scalar, size_scalar, cudaMemcpyHostToDevice);
+            } else {
+                memcpy(pinned_vector, hostVarList_[i], size_vector);
+                cudaErr = cudaMemcpyAsync(deviceVarList_[i], pinned_vector, size_vector, cudaMemcpyHostToDevice);
+            }
             QL_REQUIRE(cudaErr == cudaSuccess, "CudaContext::finalizeCalculation(): memory copy for deviceVarList_["
                                                    << i << "] fails: " << cudaGetErrorString(cudaErr));
         }
@@ -629,6 +641,8 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
         QL_REQUIRE(cudaErr == cudaSuccess, "CudaContext::finalizeCalculation(): memory copy for &deviceVarList_["
                                                << i << "] fails: " << cudaGetErrorString(cudaErr));
     }
+    cudaFreeHost(pinned_scalar);
+    cudaFreeHost(pinned_vector);
     for (size_t i = hostVarList_.size(); i < (nInputVars_ + nRandomVariables_[currentId_ - 1] + nOperations_[currentId_ - 1]); i++) {
         double* dMem;
         deviceVarList_.push_back(dMem);
@@ -709,8 +723,8 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
         //    (std::string("--gpu-architecture=") + getGPUArchitecture[device_prop.name]).c_str(), " - std = c++ 17 ", nullptr};
         const char* compileOptions[] = {
             "--include-path=C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.3/include",
-            "--gpu-architecture=compute_86", "-std=c++17", nullptr};
-        nvrtcErr = nvrtcCompileProgram(nvrtcProgram, 3, compileOptions);
+            "--gpu-architecture=compute_86", "-std=c++17", "-dopt=on", "--time=D:/GitHub/Engine/build/QuantExt/test/Debug/time.txt", nullptr};
+        nvrtcErr = nvrtcCompileProgram(nvrtcProgram, 5, compileOptions);
         QL_REQUIRE(nvrtcErr == NVRTC_SUCCESS, "CudaContext::finalizeCalculation(): error during nvrtcCompileProgram(): "
                                                   << nvrtcGetErrorString(nvrtcErr));
 
