@@ -604,19 +604,28 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
     QL_REQUIRE(cudaErr == cudaSuccess, "CudaContext::finalizeCalculation(): memory allocate for deviceVarList_ fails: " << cudaGetErrorString(cudaErr));
     size_t size_scalar = sizeof(double);
     size_t size_vector = sizeof(double) * size_[currentId_ - 1];
+    size_t size_var;
     for (size_t i = 0; i < hostVarList_.size(); i++) {
+        size_var = inputVarIsScalar_[i] ? size_scalar : size_vector;
         // Allocate memory in device
-        cudaErr = cudaMalloc(&deviceVarList_[i], inputVarIsScalar_[i] ? size_scalar : size_vector);
+        cudaErr = cudaMalloc(&deviceVarList_[i], size_var);
         QL_REQUIRE(cudaErr == cudaSuccess, "CudaContext::finalizeCalculation(): memory allocate for deviceVarList_["
                                                << i << "] fails: " << cudaGetErrorString(cudaErr));
         //Copy vector from host to device
         if (hostVarList_[i] != nullptr) {
-            cudaErr = cudaMemcpyAsync(deviceVarList_[i], hostVarList_[i], inputVarIsScalar_[i] ? size_scalar : size_vector,
-                                 cudaMemcpyHostToDevice);
+            // Allocate pinned memory on device
+            double* pinned_v;
+            cudaErr = cudaMallocHost((void**)&pinned_v, size_var);
+            QL_REQUIRE(cudaErr == cudaSuccess,
+                       "CudaContext::finalizeCalculation(): host pinned memory allocation for hostVarList_["
+                           << i << "] fails: " << cudaGetErrorString(cudaErr));
+            memcpy(pinned_v, hostVarList_[i], size_var);
+            cudaErr = cudaMemcpyAsync(deviceVarList_[i], pinned_v, size_var, cudaMemcpyHostToDevice);
+            //cudaErr = cudaMemcpyAsync(deviceVarList_[i], hostVarList_[i], size_var, cudaMemcpyHostToDevice);
             QL_REQUIRE(cudaErr == cudaSuccess, "CudaContext::finalizeCalculation(): memory copy for deviceVarList_["
                                                    << i << "] fails: " << cudaGetErrorString(cudaErr));
         }
-        cudaErr = cudaMemcpy(&input[i], &deviceVarList_[i], sizeof(double*), cudaMemcpyHostToDevice);
+        cudaErr = cudaMemcpyAsync(&input[i], &deviceVarList_[i], sizeof(double*), cudaMemcpyHostToDevice);
         QL_REQUIRE(cudaErr == cudaSuccess, "CudaContext::finalizeCalculation(): memory copy for &deviceVarList_["
                                                << i << "] fails: " << cudaGetErrorString(cudaErr));
     }
@@ -636,6 +645,7 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
     //std::cout << "nRandomVariables_ = " << nRandomVariables_[currentId_ - 1] << std::endl;
     //std::cout << "nOperations_ = " << nOperations_[currentId_ - 1] << std::endl;
     if (debug_) {
+        std::cout << "datacopy = " << timer.elapsed().wall - timerBase << std::endl;
         debugInfo_.nanoSecondsDataCopy += timer.elapsed().wall - timerBase;
     }
 
@@ -734,6 +744,7 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
         hasKernel_[currentId_ - 1] = true;
         
         if (debug_) {
+            std::cout << "nvrtc build = " << timer.elapsed().wall - timerBase << std::endl;
             debugInfo_.nanoSecondsProgramBuild += timer.elapsed().wall - timerBase;
         }
     }
