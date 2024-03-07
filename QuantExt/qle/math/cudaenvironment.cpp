@@ -26,6 +26,9 @@
 
 #include <iostream>
 
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+
 #ifdef ORE_ENABLE_CUDA
 #include <cuda.h>
 #include <cuda_runtime.h>
@@ -155,6 +158,7 @@ private:
 };
 
 CudaFramework::CudaFramework() {
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     std::set<std::string> tmp;
     int nDevices;
     cudaGetDeviceCount(&nDevices);
@@ -178,11 +182,18 @@ CudaContext::~CudaContext() {
     if (initialized_) {
         CUresult err;
 
+        for (auto& state : mersenneTwisterStates_) {
+            auto cudaErr = cudaFree(state);
+            QL_REQUIRE(cudaErr == cudaSuccess, "CudaContext::~CudaContext(): free memory for mersenneTwisterStates_ fails: "
+                                                   << cudaGetErrorString(cudaErr));
+        }
+
         for (auto& m : module_) {
             releaseModule(m);
         }
 
-        if (err = cuCtxDestroy(context_); err != CUDA_SUCCESS) {
+        err = cuCtxDestroy(context_);
+        if (err != CUDA_SUCCESS) {
             const char* errorStr;
             cuGetErrorString(err, &errorStr);
             std::cerr << "CudaContext: error during cuCtxDestroy: " << errorStr << std::endl;
@@ -367,8 +378,6 @@ std::size_t CudaContext::createInputVariable(double* v) {
                "CudaContext::createInputVariable(): not in state createInput (" << static_cast<int>(currentState_)
                                                                                   << ")");
     double* dMem;
-    double* pinned_v;
-
     deviceVarList_.push_back(dMem);
     inputVarIsScalar_.push_back(false);
     hostVarList_.push_back(v);
@@ -559,6 +568,9 @@ std::size_t CudaContext::applyOperation(const std::size_t randomVariableOpCode,
 void CudaContext::freeVariable(const std::size_t id) {
     QL_REQUIRE(currentState_ == ComputeState::calc,
                "CudaContext::free(): not in state calc (" << static_cast<int>(currentState_) << ")");
+    QL_REQUIRE(!hasKernel_[currentId_ - 1], "CudaContext::freeVariable(): id ("
+                                                << currentId_ << ") in version " << version_[currentId_ - 1]
+                                                << " has a kernel already, free variable cannot be called.");
 
     // we do not free input variables, only variables that were added during the calc
 
@@ -571,6 +583,9 @@ void CudaContext::freeVariable(const std::size_t id) {
 void CudaContext::declareOutputVariable(const std::size_t id) {
     QL_REQUIRE(currentState_ != ComputeState::idle, "CudaContext::declareOutputVariable(): state is idle");
     QL_REQUIRE(currentId_ > 0, "CudaContext::declareOutputVariable(): current id not set");
+    QL_REQUIRE(!hasKernel_[currentId_ - 1], "CudaContext::declareOutputVariable(): id ("
+                                                << currentId_ << ") in version " << version_[currentId_ - 1]
+                                                << " has a kernel already, output variables cannot be redeclared.");
     nOutputVariables_[currentId_ - 1].push_back(id);
 }
 
@@ -659,7 +674,7 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
     //std::cout << "nRandomVariables_ = " << nRandomVariables_[currentId_ - 1] << std::endl;
     //std::cout << "nOperations_ = " << nOperations_[currentId_ - 1] << std::endl;
     if (debug_) {
-        std::cout << "datacopy = " << timer.elapsed().wall - timerBase << std::endl;
+        //std::cout << "datacopy = " << timer.elapsed().wall - timerBase << std::endl;
         debugInfo_.nanoSecondsDataCopy += timer.elapsed().wall - timerBase;
     }
 
@@ -754,11 +769,12 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
             cuGetErrorString(cuErr, &errStr);
             std::cerr << "CudaContext::finalizeCalculation(): error during cuModuleGetFunction(): " << errStr << std::endl;
         }
+        delete[] ptx;
 
         hasKernel_[currentId_ - 1] = true;
         
         if (debug_) {
-            std::cout << "nvrtc build = " << timer.elapsed().wall - timerBase << std::endl;
+            //std::cout << "nvrtc build = " << timer.elapsed().wall - timerBase << std::endl;
             debugInfo_.nanoSecondsProgramBuild += timer.elapsed().wall - timerBase;
         }
     }
@@ -799,6 +815,19 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output, const Settin
                        << out << "] fails: " << cudaGetErrorString(cudaErr));
         i++;
     }
+
+    // clear memory
+    for (size_t i = 0; i < hostVarList_.size(); ++i) {
+        if (inputVarIsScalar_[i])
+            delete hostVarList_[i];
+    }
+
+    for (auto ptr : deviceVarList_) {
+        releaseMem(ptr);
+    }
+    cudaErr = cudaFree(input);
+    QL_REQUIRE(cudaErr == cudaSuccess,
+               "CudaContext::finalizeCalculation(): free memory for input fails: " << cudaGetErrorString(cudaErr));
 
     if (debug_) {
         debugInfo_.nanoSecondsDataCopy += timer.elapsed().wall - timerBase;
