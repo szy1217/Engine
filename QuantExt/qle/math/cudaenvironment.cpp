@@ -359,6 +359,7 @@ std::pair<std::size_t, bool> CudaContext::initiateCalculation(const std::size_t 
     deviceVarList_.clear();
 
     freedVariables_.clear();
+    outputVariables_.clear();
 
     // reset kernel source
 
