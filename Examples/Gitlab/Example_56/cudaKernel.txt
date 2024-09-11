@@ -1,0 +1,12 @@
+Loading inputs                                    OK
+Requested analytics                               CASHFLOW,EXPOSURE,NPV
+Pricing: Build Market                             OK
+Pricing: Build Portfolio                          OK
+Pricing: Cashflow Report                          OK
+Pricing: NPV Report                               OK
+NVRTC compilation log:
+
+Writing reports...                                OK
+Writing cubes...                                  OK
+run time: 224.825912 sec
+ORE done.

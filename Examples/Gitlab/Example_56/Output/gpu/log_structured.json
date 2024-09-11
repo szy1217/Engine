@@ -1,0 +1,1 @@
+{ "category": "Warning", "group": "Analytics", "message": "Error in ORE analytics: CudaContext: cuSolver error during currentId_ = 1, location: finalizeCalculation, cusolverDnIRSXgels(first kernel), error: CUSOLVER_STATUS_INVALID_WORKSPACE", "sub_fields": [ { "name": "analyticType", "value": "OREApp::run()" }, { "name": "warningType", "value": "Error" } ] }

@@ -1,0 +1,2 @@
+#TradeId,TradeType,Maturity,MaturityTime,NPV,NpvCurrency,NPV(Base),BaseCurrency,Notional,NotionalCurrency,Notional(Base),NettingSet,CounterParty
+1:EquityOption,ScriptedTrade,2023-11-07,0.252055,153167.579540,EUR,153167.579540,EUR,4350000.00,EUR,4350000.00,CPTY,CPTY

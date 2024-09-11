@@ -1,0 +1,13 @@
+#TradeId,ResultId,ResultType,ResultValue
+1:EquityOption,isdaAssetClass,string,Equity
+1:EquityOption,isdaBaseProduct,string,Other
+1:EquityOption,isdaSubProduct,string,
+1:EquityOption,isdaTransaction,string,
+1:EquityOption,BlackScholes.CalibrationStrike_EQ-RIC:.STOXX50E,string,4350.000000
+1:EquityOption,BlackScholes.Forward_EQ-RIC:.STOXX50E_2023-08-07,double,4337.500000
+1:EquityOption,BlackScholes.Forward_EQ-RIC:.STOXX50E_2023-11-07,double,4378.773505
+1:EquityOption,BlackScholes.Volatility_EQ-RIC:.STOXX50E_2023-11-07,double,0.161791
+1:EquityOption,cashFlowResults[0],cashflows,154625.046496 EUR @ 2023-11-07
+1:EquityOption,currentNotional,double,4350000.000000
+1:EquityOption,instMultiplier,double,1.000000
+1:EquityOption,notionalCurrency,string,EUR

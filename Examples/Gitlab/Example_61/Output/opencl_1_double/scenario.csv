@@ -1,0 +1,9 @@
+#TradeId,Factor,Up/Down,Base NPV,ShiftSize_1,ShiftSize_2,Scenario NPV,Difference
+1:EquityOption,DiscountCurve/EUR/2/3M,Up,153167.58,0.000100,#N/A,153163.72,-3.86
+1:EquityOption,IndexCurve/EUR-ESTER/2/3M,Up,153167.58,0.000100,#N/A,153227.75,60.17
+1:EquityOption,EquitySpot/RIC:.STOXX50E/0/spot,Up,153167.58,4.337500,#N/A,155565.14,2397.56
+1:EquityOption,EquitySpot/RIC:.STOXX50E/0/spot,Down,153167.58,4.337500,#N/A,150791.61,-2375.97
+1:EquityOption,EquityVolatility/RIC:.STOXX50E/62/3M/-0.1,Up,153167.58,0.000162,#N/A,153260.41,92.83
+1:EquityOption,EquityVolatility/RIC:.STOXX50E/74/3M/-0.05,Up,153167.58,0.000160,#N/A,153212.31,44.73
+1:EquityOption,EquityVolatility/RIC:.STOXX50E/62/3M/-0.1,Down,153167.58,0.000162,#N/A,153074.75,-92.83
+1:EquityOption,EquityVolatility/RIC:.STOXX50E/74/3M/-0.05,Down,153167.58,0.000160,#N/A,153122.85,-44.73

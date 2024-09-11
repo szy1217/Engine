@@ -1,0 +1,6 @@
+#TradeId,IsPar,Factor_1,ShiftSize_1,Factor_2,ShiftSize_2,Currency,Base NPV,Delta,Gamma
+1:EquityOption,false,DiscountCurve/EUR/2/3M,0.000100,,0.000000,EUR,153167.58,-3.86,#N/A
+1:EquityOption,false,IndexCurve/EUR-ESTER/2/3M,0.000100,,0.000000,EUR,153167.58,60.17,#N/A
+1:EquityOption,false,EquitySpot/RIC:.STOXX50E/0/spot,4.337500,,0.000000,EUR,153167.58,2386.76,#N/A
+1:EquityOption,false,EquityVolatility/RIC:.STOXX50E/62/3M/-0.1,0.000162,,0.000000,EUR,153167.58,92.83,#N/A
+1:EquityOption,false,EquityVolatility/RIC:.STOXX50E/74/3M/-0.05,0.000160,,0.000000,EUR,153167.58,44.73,#N/A

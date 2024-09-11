@@ -1,0 +1,2 @@
+#TradeId,TradeType,Maturity,MaturityTime,NPV,NpvCurrency,NPV(Base),BaseCurrency,Notional,NotionalCurrency,Notional(Base),NettingSet,CounterParty
+4:AsianBasketOption,ScriptedTrade,2024-10-20,1.203286,2027118.374374,EUR,2027118.374374,EUR,45000000.00,EUR,45000000.00,CPTY_A,CPTY_A

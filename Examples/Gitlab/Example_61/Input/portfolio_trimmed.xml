@@ -1,0 +1,41 @@
+<Portfolio>
+
+  <Trade id="4:AsianBasketOption">
+    <TradeType>ScriptedTrade</TradeType>
+    <Envelope>
+      <CounterParty>CPTY_A</CounterParty>
+      <NettingSetId>CPTY_A</NettingSetId>
+      <AdditionalFields/>
+    </Envelope>
+    <AsianBasketOptionData>
+      <Expiry type="event">2024-10-15</Expiry>
+      <Settlement type="event">2024-10-20</Settlement>
+      <ObservationDates type="event">
+	<ScheduleData>
+          <Rules>
+            <StartDate>2023-10-15</StartDate>
+            <EndDate>2024-10-15</EndDate>
+            <Tenor>1D</Tenor>
+            <Calendar>US</Calendar>
+            <Convention>F</Convention>
+            <TermConvention>F</TermConvention>
+            <Rule>Forward</Rule>
+          </Rules>
+	</ScheduleData>
+      </ObservationDates>
+      <PutCall type="optionType">Call</PutCall>
+      <LongShort type="longShort">Long</LongShort>
+      <Notional type="number">10000</Notional>
+      <Strike type="number">4500</Strike>
+      <Underlyings type="index">
+	<Value>EQ-RIC:.SPX</Value>
+	<Value>EQ-RIC:.STOXX50E</Value>
+      </Underlyings>
+      <Weights type="number">
+	<Value>0.5</Value>
+	<Value>0.5</Value>
+      </Weights>
+      <PayCcy type="currency">EUR</PayCcy>
+    </AsianBasketOptionData>
+  </Trade>
+</Portfolio>
