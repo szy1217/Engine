@@ -671,30 +671,30 @@ void CudaContext::updateVariatesMT19937_CPU() {
             // clang-format off
             // ported from from QuantLib::InverseCumulativeNormal
             std::string sourceInvCumN = "__device__ " + fpTypeStr + " ore_invCumN(const unsigned int x0) {\n"
-                "    const " + fpTypeStr + " a1_ = -3.969683028665376e+01" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " a2_ = 2.209460984245205e+02" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " a3_ = -2.759285104469687e+02" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " a4_ = 1.383577518672690e+02" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " a5_ = -3.066479806614716e+01" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " a6_ = 2.506628277459239e+00" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " b1_ = -5.447609879822406e+01" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " b2_ = 1.615858368580409e+02" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " b3_ = -1.556989798598866e+02" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " b4_ = 6.680131188771972e+01" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " b5_ = -1.328068155288572e+01" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " c1_ = -7.784894002430293e-03" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " c2_ = -3.223964580411365e-01" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " c3_ = -2.400758277161838e+00" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " c4_ = -2.549732539343734e+00" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " c5_ = 4.374664141464968e+00" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " c6_ = 2.938163982698783e+00" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " d1_ = 7.784695709041462e-03" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " d2_ = 3.224671290700398e-01" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " d3_ = 2.445134137142996e+00" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " d4_ = 3.754408661907416e+00" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " x_low_ = 0.02425" + fpSuffix + ";\n"
-                "    const " + fpTypeStr + " x_high_ = 1.0" + fpSuffix + " - x_low_;\n"
-                "    const " + fpTypeStr + " x = ((" + fpTypeStr + ")x0 + 0.5" + fpSuffix + ") / 4294967296.0"+ fpSuffix + ";\n"
+                "const " + fpTypeStr + " a1_=-3.969683028665376e+01" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " a2_=2.209460984245205e+02" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " a3_=-2.759285104469687e+02" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " a4_=1.383577518672690e+02" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " a5_=-3.066479806614716e+01" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " a6_=2.506628277459239e+00" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " b1_=-5.447609879822406e+01" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " b2_=1.615858368580409e+02" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " b3_=-1.556989798598866e+02" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " b4_=6.680131188771972e+01" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " b5_=-1.328068155288572e+01" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " c1_=-7.784894002430293e-03" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " c2_=-3.223964580411365e-01" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " c3_=-2.400758277161838e+00" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " c4_=-2.549732539343734e+00" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " c5_=4.374664141464968e+00" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " c6_=2.938163982698783e+00" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " d1_=7.784695709041462e-03" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " d2_=3.224671290700398e-01" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " d3_=2.445134137142996e+00" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " d4_=3.754408661907416e+00" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " x_low_=0.02425" + fpSuffix + ";\n"
+                "const " + fpTypeStr + " x_high_=1.0" + fpSuffix + " - x_low_;\n"
+                "const " + fpTypeStr + " x=((" + fpTypeStr + ")x0 + 0.5" + fpSuffix + ") / 4294967296.0"+ fpSuffix + ";\n"
                 "    if (x < x_low_ || x_high_ < x) {\n"
                 "        if (x0 == 1U <<32 - 1) {\n"
                 "          return " + fpMaxValue + ";\n"
@@ -895,7 +895,7 @@ std::size_t CudaContext::applyOperation(const std::size_t randomVariableOpCode,
         }
         // arg is random variable
         else if (args[i] < inputVarIsScalar_.size() + nRandomVariables_[currentId_ - 1]){
-            argStr[i] = "r[tid + " + std::to_string((args[i] - inputVarIsScalar_.size())  * size_[currentId_ - 1]) + "]";
+            argStr[i] = "r[tid+" + std::to_string((args[i] - inputVarIsScalar_.size())  * size_[currentId_ - 1]) + "]";
         }
         // arg larger than input + random variable
         else{
@@ -957,23 +957,39 @@ std::size_t CudaContext::applyOperation(const std::size_t randomVariableOpCode,
 
         // generate source code
         if (resultIdNeedsDeclaration)
-            source_.back() += "        double v" + std::to_string(resultId) + " = ";
+            source_.back() += "double v" + std::to_string(resultId) + "=";
         else
-            source_.back() += "        v" + std::to_string(resultId) + " = ";
+            source_.back() += "v" + std::to_string(resultId) + "=";
 
         switch (randomVariableOpCode) {
             case RandomVariableOpCode::None: {
             }
             case RandomVariableOpCode::Add: {
                 source_.back() += argStr[0];
-                for (size_t i = 1;i < argStr.size(); i++) {
-                    source_.back() += " + " + argStr[i];
-                }
+                //if (argStr.size() <= 10) {
+                    for (size_t i = 1;i < argStr.size(); i++) {
+                        source_.back() += "+" + argStr[i];
+                    }
+                //}
+                //else {
+                //    int count = 0;
+                //    for (size_t i = 1;i < argStr.size(); i++) {
+                //        if (count < 10) {
+                //            source_.back() += "+" + argStr[i];
+                //            ++count;
+                //        }
+                //        else {
+                //            source_.back() += ";\n"
+                //                              "v" + std::to_string(resultId) + "=" + argStr[i];
+                //            count = 0;
+                //        }
+                //    }
+                //}
                 source_.back() += ";\n";
                 break;
             }
             case RandomVariableOpCode::Subtract: {
-                source_.back() += argStr[0] + " - " + argStr[1] + ";\n";
+                source_.back() += argStr[0] + "-" + argStr[1] + ";\n";
                 break;
             }
             case RandomVariableOpCode::Negative: {
@@ -981,11 +997,11 @@ std::size_t CudaContext::applyOperation(const std::size_t randomVariableOpCode,
                 break;
             }
             case RandomVariableOpCode::Mult: {
-                source_.back() += argStr[0] + " * " + argStr[1] + ";\n";
+                source_.back() += argStr[0] + "*" + argStr[1] + ";\n";
                 break;
             }
             case RandomVariableOpCode::Div: {
-                source_.back() += argStr[0] + " / " + argStr[1] + ";\n";
+                source_.back() += argStr[0] + "/" + argStr[1] + ";\n";
                 break;
             }
             case RandomVariableOpCode::IndicatorEq: {
@@ -1062,23 +1078,23 @@ std::size_t CudaContext::applyOperation(const std::size_t randomVariableOpCode,
                     numOfExpectationInKernel_[currentId_ - 1].back() = -1;
                     break;
             }
-			source_.back() += "     if (ore_closeEnough(" + argStr[1] + ", 1.0)) partialSum[threadIdx.x] = " + argStr[0] + ";\n"
-                              "     else partialSum[threadIdx.x] = 0;\n"
-                              "      __syncthreads();\n"
-                              "     for (int s = blockDim.x / 2; s > 0; s >>= 1) {\n"
-                              "         if (threadIdx.x < s) partialSum[threadIdx.x] += partialSum[threadIdx.x + s];\n"
-                              "         __syncthreads();\n"
-                              "     }\n"
-                              "     if (threadIdx.x == 0) e[blockIdx.x + " + std::to_string(nNUM_BLOCKS_[currentId_ - 1] * expectationCount_) + "] = partialSum[0];\n";
-            newKernelE_ +=  "   if (blockIdx.x == " + std::to_string(expectationCount_) + ") {\n"
-                            "       if (threadIdx.x < " + std::to_string(nNUM_BLOCKS_[currentId_ - 1]) + ") partialSum[threadIdx.x] = e[threadIdx.x + " + std::to_string(nNUM_BLOCKS_[currentId_ - 1] * expectationCount_) + "];\n"
-                            "       __syncthreads();\n"
-                            "       for (int s = " + std::to_string(static_cast<int>(std::pow(2, (std::ceil(std::log2(nNUM_BLOCKS_[currentId_ - 1])) - 1)))) + "; s > 0; s >>= 1) {\n"
-                            "            if (threadIdx.x < s && threadIdx.x + s < " + std::to_string(nNUM_BLOCKS_[currentId_ - 1]) + ") partialSum[threadIdx.x] += partialSum[threadIdx.x + s];\n"
-                            "           __syncthreads();\n"
-                            "       }\n"
-                            "       eR[" + std::to_string(resultIdFlatE_.size() + expectationCount_) + "] = partialSum[0] / " + std::to_string(size_[currentId_ - 1]) + ";\n"
-                            "   }\n";
+			source_.back() += "if (ore_closeEnough(" + argStr[1] + ", 1.0)) partialSum[threadIdx.x]=" + argStr[0] + ";\n"
+                              "else partialSum[threadIdx.x] = 0;\n"
+                              "__syncthreads();\n"
+                              "for (int s=blockDim.x/2; s>0;s >>= 1) {\n"
+                              "if (threadIdx.x < s) partialSum[threadIdx.x]+=partialSum[threadIdx.x + s];\n"
+                              "__syncthreads();\n"
+                              "}\n"
+                              "if (threadIdx.x==0) e[blockIdx.x+" + std::to_string(nNUM_BLOCKS_[currentId_ - 1] * expectationCount_) + "] = partialSum[0];\n";
+            newKernelE_ +=  "if (blockIdx.x==" + std::to_string(expectationCount_) + ") {\n"
+                            "if (threadIdx.x<" + std::to_string(nNUM_BLOCKS_[currentId_ - 1]) + ") partialSum[threadIdx.x]=e[threadIdx.x+" + std::to_string(nNUM_BLOCKS_[currentId_ - 1] * expectationCount_) + "];\n"
+                            "__syncthreads();\n"
+                            "for (int s=" + std::to_string(static_cast<int>(std::pow(2, (std::ceil(std::log2(nNUM_BLOCKS_[currentId_ - 1])) - 1))))+";s>0;s>>=1) {\n"
+                            "if (threadIdx.x<s && threadIdx.x+s<" + std::to_string(nNUM_BLOCKS_[currentId_ - 1]) + ") partialSum[threadIdx.x]+=partialSum[threadIdx.x+s];\n"
+                            "__syncthreads();\n"
+                            "}\n"
+                            "eR[" + std::to_string(resultIdFlatE_.size() + expectationCount_) + "] = partialSum[0]/" + std::to_string(size_[currentId_ - 1]) + ";\n"
+                            "}\n";
             ++expectationCount_;
             resultIdUnprocessedE_.push_back(resultId);
         } else {
@@ -1243,19 +1259,15 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output) {
     if (!hasKernel_[currentId_ - 1]) {
         std::string includeSource =
             "__device__ bool ore_closeEnough(const double x, const double y) {\n"
-            "    double tol = 42.0 * 0x1.0p-52;\n"
-            "    double diff = fabs(x - y);\n"
-            "    if (x == 0.0 || y == 0.0)\n"
-            "        return diff < tol * tol;\n"
-            "    return diff <= tol * fabs(x) || diff <= tol * fabs(y);\n"
-            "}\n\n"
-            "__device__ double ore_indicatorEq(const double x, const double y) { return ore_closeEnough(x, y) ? 1.0 : "
-            "0.0; }\n\n"
-            "__device__ double ore_indicatorGt(const double x, const double y) { return x > y && !ore_closeEnough(x, "
-            "y); }\n\n"
-            "__device__ double ore_indicatorGeq(const double x, const double y) { return x > y || ore_closeEnough(x, "
-            "y); }\n\n"
-            "__device__ double normpdf(const double x) { return exp(-0.5 * x * x) / sqrt(2.0 * 3.1415926535897932384626); }\n\n";
+            "double tol=42.0*0x1.0p-52;\n"
+            "double diff=fabs(x-y);\n"
+            "if (x==0.0 || y==0.0) return diff<tol*tol;\n"
+            "return diff<=tol*fabs(x)||diff<=tol*fabs(y);\n"
+            "}\n"
+            "__device__ double ore_indicatorEq(const double x, const double y) {return ore_closeEnough(x,y)?1.0:0.0;}\n"
+            "__device__ double ore_indicatorGt(const double x, const double y) {return x>y&&!ore_closeEnough(x,y);}\n"
+            "__device__ double ore_indicatorGeq(const double x, const double y) {return x>y||ore_closeEnough(x,y);}\n"
+            "__device__ double normpdf(const double x) {return exp(-0.5*x*x)/sqrt(2.0*3.1415926535897932384626);}\n";
 
         // if newKernelE_ is not empty, add a new kernel
         if (!newKernelE_.empty()) {
@@ -1292,22 +1304,21 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output) {
 
             kernelSource = includeSource + "extern \"C\" __global__ void " + kernelName[0] +
                                        "(const double* input, double* output, const double* r) {\n"
-                                       "    int tid = blockIdx.x * blockDim.x + threadIdx.x;\n"
-                                       "    if (tid < " + std::to_string(size_[currentId_ - 1]) + ") {\n";
+                                       "int tid=blockIdx.x*blockDim.x+threadIdx.x;\n"
+                                       "if (tid<" + std::to_string(size_[currentId_ - 1]) + ") {\n";
             kernelSource += source_[0];
 
             size_t ii = 0;
             for (auto const& out : outputVariables_) {
                 if (out < nInputVars_)
-                    kernelSource += "       output[tid + " + std::to_string(ii * size_[currentId_ - 1]) + "] = input[" +
+                    kernelSource += "output[tid+" + std::to_string(ii * size_[currentId_ - 1]) + "]=input[" +
                                     std::to_string(out) + (inputVarIsScalar_[out] ? "" : " + tid") + "];\n";
                 else
-                    kernelSource += "       output[tid + " + std::to_string(ii * size_[currentId_ - 1]) + "] = v" +
+                    kernelSource += "output[tid+" + std::to_string(ii * size_[currentId_ - 1]) + "]=v" +
                                     std::to_string(out) + ";\n";
                 ++ii;
             }
-            kernelSource += "   }\n"
-                            "}\n";
+            kernelSource += "}}\n";
         } else {
             kernelSource += includeSource;
             // Have conditional expectation
@@ -1320,8 +1331,8 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output) {
                     for (auto const& out : outputVariables_) {
                         auto expectationResult = std::find(resultIdFlatE_.begin(), resultIdFlatE_.end(), out) ;
                         if (out < inputVarIsScalar_.size()){
-                            outputSource += "       output[tid + " + std::to_string(ii * size_[currentId_ - 1]) + "] = input[" +
-                                            std::to_string(out) + (inputVarIsScalar_[out] ? "" : " + tid") + "];\n";
+                            outputSource += "output[tid+" + std::to_string(ii * size_[currentId_ - 1]) + "]=input[" +
+                                            std::to_string(out) + (inputVarIsScalar_[out] ? "" : "+tid") + "];\n";
                         } else if (out < inputVarIsScalar_.size() + nRandomVariables_[currentId_ - 1])
                             outputSource += "       output[tid + " + std::to_string(ii * size_[currentId_ - 1]) + "] = r[tid + " +
                                             std::to_string((out - inputVarIsScalar_.size()) * size_[currentId_ - 1]) + "];\n";
@@ -1393,31 +1404,41 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output) {
             // store the size of values to valuesSize
             valuesSize_[currentId_ - 1] = idCopiedToValues_.size();
         }
-
+        
+        //std::cout << kernelSource << std::endl;
         if (settings_.debug) {
             timerBase = timer.elapsed().wall;
         }
-
+        timerBase = timer.elapsed().wall;
         // Compile source code
         nvrtcProgram nvrtcProgram;
         nvrtcCall(nvrtcCreateProgram(&nvrtcProgram, kernelSource.c_str(), "kernel.cu", 0, nullptr, nullptr), "finalizeCalculation(), nvrtcCreateProgram()");
+        //std::cout << "nvrtcCreateProgram time = " << static_cast<double>(timer.elapsed().wall - timerBase)/1e9 << "s" << std::endl;
+        //timerBase = timer.elapsed().wall;
         std::string gpuArchOption = "--gpu-architecture=" + gpuArchitecture_;
         const char* compileOptions[] = {
             gpuArchOption.c_str(),
             "--split-compile=0",
-            "-std=c++17",
+            "-std=c++17"};
             //"--time=time.txt",
-            nullptr};
         nvrtcKernelCompile(nvrtcProgram, nvrtcCompileProgram(nvrtcProgram, 3, compileOptions), "finalizeCalculation(), , nvrtcCompileProgram()");
-
+        //std::cout << "nvrtcCompileProgram time = " << static_cast<double>(timer.elapsed().wall - timerBase)/1e9 << "s" << std::endl;
+        //timerBase = timer.elapsed().wall;
         // Retrieve the compiled PTX code
         size_t ptxSize;
         nvrtcCall(nvrtcGetPTXSize(nvrtcProgram, &ptxSize), "finalizeCalculation(), nvrtcGetPTXSize()");
+        //std::cout << "nvrtcGetPTXSize time = " << static_cast<double>(timer.elapsed().wall - timerBase)/1e9 << "s" << std::endl;
+        //timerBase = timer.elapsed().wall;
         char* ptx = new char[ptxSize];
         nvrtcCall(nvrtcGetPTX(nvrtcProgram, ptx), "finalizeCalculation(), nvrtcGetPTX()");
+        //std::cout << "nvrtcGetPTX time = " << static_cast<double>(timer.elapsed().wall - timerBase)/1e9 << "s" << std::endl;
+        //timerBase = timer.elapsed().wall;
         nvrtcCall(nvrtcDestroyProgram(&nvrtcProgram), "finalizeCalculation(), nvrtcDestroyProgram()");
+        //std::cout << "nvrtcDestroyProgram time = " << static_cast<double>(timer.elapsed().wall - timerBase)/1e9 << "s" << std::endl;
+        //timerBase = timer.elapsed().wall;
         cuCall(cuModuleLoadData(&module_[currentId_ - 1], ptx), "finalizeCalculation, cuModuleLoadData()");
-        
+        //std::cout << "cuModuleLoadData time = " << static_cast<double>(timer.elapsed().wall - timerBase)/1e9 << "s" << std::endl;
+        //timerBase = timer.elapsed().wall;
         for (size_t i = 0; i < source_.size(); ++i) {
             CUfunction k;
             cuCall(cuModuleGetFunction(&k, module_[currentId_ - 1], kernelName[i].c_str()), "finalizeCalculation, cuModuleGetFunction(&k)");
@@ -1427,7 +1448,7 @@ void CudaContext::finalizeCalculation(std::vector<double*>& output) {
 
         hasKernel_[currentId_ - 1] = true;
 		source_.clear();
-        
+        std::cout << "Compilation time = " << static_cast<double>(timer.elapsed().wall - timerBase)/1e9 << "s" << std::endl;
         if (settings_.debug) {
             debugInfo_.nanoSecondsProgramBuild += timer.elapsed().wall - timerBase;
         }
